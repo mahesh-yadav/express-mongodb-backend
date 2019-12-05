@@ -1,3 +1,5 @@
+import { ObjectID } from 'mongodb';
+
 let db;
 let users;
 
@@ -20,7 +22,7 @@ class UserDB {
       return await users.insertOne(user);
     } catch (e) {
       // MongoError: code: 11000 -duplicate error
-      console.log(e);
+      console.log(`Error in insertUser: ${e}`);
       throw e;
     }
   }
@@ -29,11 +31,20 @@ class UserDB {
     try {
       return await users
         .find({})
-        .project({ email: 1, name: 1, _id: 0 })
+        .project({ email: 1, name: 1 })
         .toArray();
     } catch (e) {
-      console.log(e);
+      console.log(`Error in listUsers: ${e}`);
       return [];
+    }
+  }
+
+  static async getUser(id) {
+    try {
+      return await users.findOne({ _id: ObjectID(id) });
+    } catch (e) {
+      console.log(`Error in getUser: ${e}`);
+      return null;
     }
   }
 }

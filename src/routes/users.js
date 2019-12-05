@@ -32,8 +32,11 @@ userRouter.post(
 );
 
 userRouter.get('/', UserControllers.listUsers);
+
 userRouter.get('/:userId', UserControllers.getUser);
+
 userRouter.put('/:userId', UserControllers.updateUser);
+
 userRouter.delete('/:userId', UserControllers.deleteUser);
 
 export default userRouter;

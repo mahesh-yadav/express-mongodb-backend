@@ -55,7 +55,23 @@ class UserControllers {
     res.status(200).json(result);
   }
 
-  static getUser(req, res, next) {}
+  static async getUser(req, res) {
+    let user = await UserDB.getUser(req.params.userId);
+
+    if (user) {
+      const { name, email, createdOn, updatedOn, _id } = user;
+      return res.status(200).json({
+        name,
+        _id,
+        email,
+        createdOn,
+        updatedOn,
+      });
+    }
+
+    return res.status(200).json({});
+  }
+
   static updateUser(req, res, next) {}
   static deleteUser(req, res, next) {}
 }
