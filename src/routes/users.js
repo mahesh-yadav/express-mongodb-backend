@@ -1,6 +1,7 @@
 import express from 'express';
 import UserControllers from '../controllers/users';
 import { body } from 'express-validator';
+import { requireSignin, hasAuthorization } from '../controllers/auth';
 
 const userRouter = express.Router();
 
@@ -20,7 +21,8 @@ userRouter.post(
       .isEmpty()
       .withMessage('Email is required')
       .isEmail()
-      .withMessage('Email is invalid'),
+      .withMessage('Email is invalid')
+      .normalizeEmail(),
     body('password')
       .not()
       .isEmpty()
@@ -33,10 +35,17 @@ userRouter.post(
 
 userRouter.get('/', UserControllers.listUsers);
 
-userRouter.get('/:userId', UserControllers.getUser);
+userRouter.get(
+  '/:userId',
+  requireSignin,
+  hasAuthorization,
+  UserControllers.getUser
+);
 
 userRouter.put(
   '/:userId',
+  requireSignin,
+  hasAuthorization,
   [
     body('name')
       .not()
@@ -56,6 +65,11 @@ userRouter.put(
   UserControllers.updateUser
 );
 
-userRouter.delete('/:userId', UserControllers.deleteUser);
+userRouter.delete(
+  '/:userId',
+  requireSignin,
+  hasAuthorization,
+  UserControllers.deleteUser
+);
 
 export default userRouter;

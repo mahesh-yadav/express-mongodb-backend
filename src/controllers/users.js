@@ -105,7 +105,20 @@ class UserControllers {
       });
 
       if (modifiedCount === 1) {
-        return UserControllers.getUser(req, res);
+        let user = await UserDB.getUser(req.params.userId);
+
+        if (user) {
+          const { name, email, createdOn, updatedOn, _id } = user;
+          return res.status(200).json({
+            name,
+            _id,
+            email,
+            createdOn,
+            updatedOn,
+          });
+        } else {
+          throw new Error();
+        }
       } else {
         throw new Error();
       }

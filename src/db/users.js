@@ -48,9 +48,18 @@ class UserDB {
     }
   }
 
+  static async getUserByEmail(email) {
+    try {
+      return await users.findOne({ email });
+    } catch (e) {
+      console.log(`Error in getUserByEmail: ${e}`);
+      return null;
+    }
+  }
+
   static async updateUser(id, updateUser) {
     try {
-      return await users.updateOne({ _id: ObjectID }, { $set: updateUser });
+      return await users.updateOne({ _id: ObjectID(id) }, { $set: updateUser });
     } catch (e) {
       console.log(`Error in updateUser: ${e}`);
       throw e;
