@@ -76,9 +76,45 @@ class UserControllers {
     return res.status(200).json({});
   }
 
-  static updateUser(req, res, next) {}
+  static async updateUser(req, res) {
+    const errors = validationResult(req);
 
-  static async deleteUser(req, res, next) {
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        errors: errors.array(),
+      });
+    }
+
+    const { name, password } = req.body;
+
+    const salt = makeSalt();
+    const hashedPassword = encryptPassword(password, salt);
+
+    if (!hashedPassword) {
+      return res.status(500).send('Internal server error');
+    }
+
+    const updatedOn = Date.now();
+
+    try {
+      let { modifiedCount } = await UserDB.updateUser(req.params.userId, {
+        name,
+        hashedPassword,
+        salt,
+        updatedOn,
+      });
+
+      if (modifiedCount === 1) {
+        return UserControllers.getUser(req, res);
+      } else {
+        throw new Error();
+      }
+    } catch (e) {
+      res.status(500).send('Internal Server Error');
+    }
+  }
+
+  static async deleteUser(req, res) {
     try {
       let { deletedCount } = await UserDB.deleteUser(req.params.userId);
 

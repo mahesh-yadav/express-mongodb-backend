@@ -48,6 +48,15 @@ class UserDB {
     }
   }
 
+  static async updateUser(id, updateUser) {
+    try {
+      return await users.updateOne({ _id: ObjectID }, { $set: updateUser });
+    } catch (e) {
+      console.log(`Error in updateUser: ${e}`);
+      throw e;
+    }
+  }
+
   static async deleteUser(id) {
     try {
       return await users.deleteOne({ _id: ObjectID(id) });
