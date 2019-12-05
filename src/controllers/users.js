@@ -3,7 +3,7 @@ import UserDB from '../db/users';
 import { encryptPassword, makeSalt } from '../helpers/auth';
 
 class UserControllers {
-  static async createUser(req, res, next) {
+  static async createUser(req, res) {
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
@@ -49,7 +49,12 @@ class UserControllers {
     }
   }
 
-  static listUsers(req, res, next) {}
+  static async listUsers(req, res) {
+    let result = await UserDB.listUsers();
+
+    res.status(200).json(result);
+  }
+
   static getUser(req, res, next) {}
   static updateUser(req, res, next) {}
   static deleteUser(req, res, next) {}

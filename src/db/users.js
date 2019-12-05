@@ -24,6 +24,18 @@ class UserDB {
       throw e;
     }
   }
+
+  static async listUsers() {
+    try {
+      return await users
+        .find({})
+        .project({ email: 1, name: 1, _id: 0 })
+        .toArray();
+    } catch (e) {
+      console.log(e);
+      return [];
+    }
+  }
 }
 
 export default UserDB;
