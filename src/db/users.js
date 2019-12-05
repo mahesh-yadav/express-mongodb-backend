@@ -47,6 +47,15 @@ class UserDB {
       return null;
     }
   }
+
+  static async deleteUser(id) {
+    try {
+      return await users.deleteOne({ _id: ObjectID(id) });
+    } catch (e) {
+      console.log(`Error in deleteUser: ${e}`);
+      throw e;
+    }
+  }
 }
 
 export default UserDB;

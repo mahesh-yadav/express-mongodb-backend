@@ -36,16 +36,20 @@ class UserControllers {
         insertedCount,
       });
     } catch (e) {
-      res.status(400).json({
-        errors: [
-          {
-            value: req.body.email,
-            msg: 'Email already in use',
-            param: 'email',
-            location: 'body',
-          },
-        ],
-      });
+      if (e.code === 11000) {
+        res.status(400).json({
+          errors: [
+            {
+              value: req.body.email,
+              msg: 'Email already in use',
+              param: 'email',
+              location: 'body',
+            },
+          ],
+        });
+      } else {
+        res.status(500).send('Internal Server Error');
+      }
     }
   }
 
@@ -73,7 +77,18 @@ class UserControllers {
   }
 
   static updateUser(req, res, next) {}
-  static deleteUser(req, res, next) {}
+
+  static async deleteUser(req, res, next) {
+    try {
+      let { deletedCount } = await UserDB.deleteUser(req.params.userId);
+
+      res.status(200).json({
+        deletedCount,
+      });
+    } catch (e) {
+      res.status(500).send('Internal server error');
+    }
+  }
 }
 
 export default UserControllers;
